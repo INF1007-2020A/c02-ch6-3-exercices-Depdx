@@ -1,19 +1,79 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+from collections import deque
 
 def check_brackets(text, brackets):
-	return False
+
+	#pairer les brackets      fermant        ouvrant
+	paire_bracket_ouvrante = dict(zip(brackets[0::2], brackets[1::2]))
+	paire_bracket_fermant = dict(zip(brackets[1::2], brackets[0::2]))
+	bucket = deque()
+
+	for lettre in text:
+		#parentase ouvrant
+		if lettre in paire_bracket_ouvrante:
+			bucket.append(lettre)
+		elif lettre in paire_bracket_fermant:
+			if len(bucket)==0 or bucket.pop() != paire_bracket_fermant[lettre]:
+				return False
+	if len(bucket) != 0:
+		return False
+	else:
+		return True
+
+	return paire_bracket
 
 def remove_comments(full_text, comment_start, comment_end):
-	return ""
+	while True:
+		#trouver le prochaine debut de commentaire
+		index_debut=full_text.find(comment_start)
+
+		#trouver la prochaine fin de commentaire
+		index_fin = full_text.find(comment_end)
+
+		#si aucun des deux trouvers break C bon
+		if index_debut==-1 and -1==index_fin:
+				return full_text
+
+		#si fermetur est avant ouverture ou trouver un mais pas l'autre
+			#return none
+		if index_fin < index_debut or (index_fin==-1) != (index_debut==-1):
+				return None
+		full_text = full_text[:index_debut]+full_text[index_fin+len(comment_end):]
+
 
 def get_tag_prefix(text, opening_tags, closing_tags):
-	return (None, None)
+
+	for t in zip(opening_tags,closing_tags):
+		if text.startswith(t[0]):
+			return (t[0],None)
+		elif text.startswith(t[1]):
+			return (None,t[1])
+	return (None,None)
+
 
 def check_tags(full_text, tag_names, comment_tags):
-	return False
 
+	text = remove_comments(full_text,*comment_tags)
+	if text is None:
+		return False
+
+	#genere les balises
+	otags = {f"<{tag}>": f"</{tag}>" for tag in tag_names}
+	ctags = { k:v for v,k in otags.items()}
+
+
+	# while True
+	# 	#check si c<Est un tag ouvrant
+	# 	tag_potentiel = get_tag_prefix(text,otags,ctags)
+	# 	if :
+	#
+	# 	elif:
+	#
+	# 	else:
+
+
+	return ctags
 
 if __name__ == "__main__":
 	brackets = ("(", ")", "{", "}")
